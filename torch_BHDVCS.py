@@ -1,8 +1,10 @@
 
+
+import torch
 import numpy as np
 import Lorentz_Vector as lv
 
-class BHDVCS(object):
+class TBHDVCS(object):
 
     def __init__(self):
         self.ALP_INV = 137.0359998 # 1 / Electromagnetic Fine Structure Constant
@@ -46,7 +48,7 @@ class BHDVCS(object):
         #Skewness parameter
         self.xi = 1. * self.x * ( ( 1. + self.t / ( 2. * self.QQ ) ) / ( 2. - self.x + self.x * self.t / self.QQ ) ) # skewness parameter eq. (12b) dnote: there is a minus sign on the write up that shouldn't be there
         #Minimum t value
-        self.tmin = ( self.QQ * ( 1. - np.sqrt( 1. + self.gg ) + self.gg / 2. ) ) / ( self.x * ( 1. - np.sqrt( 1. + self.gg ) + self.gg / ( 2.* self.x ) ) ) # minimum t eq. (29)
+        self.tmin = ( self.QQ * ( 1. - torch.sqrt( 1. + self.gg ) + self.gg / 2. ) ) / ( self.x * ( 1. - torch.sqrt( 1. + self.gg ) + self.gg / ( 2.* self.x ) ) ) # minimum t eq. (29)
         #Final Lepton energy
         self.kpr = self.k * ( 1. - self.y ) # k' from eq. (23)
         #outgoing photon energy
@@ -55,18 +57,18 @@ class BHDVCS(object):
         self.po = self.M - self.t / 2. / self.M # This is p'_0 from eq. (28b)
         self.pmag = np.sqrt( ( -1*self.t ) * ( 1. - (self.t / (4. * self.M *self.M ))) ) # p' magnitude from eq. (28b)
         #Angular Kinematics of outgoing photon
-        self.cth = -1. / np.sqrt( 1. + self.gg ) * ( 1. + self.gg / 2. * ( 1. + self.t / self.QQ ) / ( 1. + self.x * self.t / self.QQ ) ) # This is np.cos(theta) eq. (26)
-        self.theta = np.arccos(self.cth) # theta angle
+        self.cth = -1. / torch.sqrt( 1. + self.gg ) * ( 1. + self.gg / 2. * ( 1. + self.t / self.QQ ) / ( 1. + self.x * self.t / self.QQ ) ) # This is torch.cos(theta) eq. (26)
+        self.theta = torch.acos(self.cth) # theta angle
         #print('Theta: ', self.theta)
         #Lepton Angle Kinematics of initial lepton
-        self.sthl = np.sqrt( self.gg ) / np.sqrt( 1. + self.gg ) * ( np.sqrt ( 1. - self.y - self.y * self.y * self.gg / 4. ) ) # sin(theta_l) from eq. (22a)
-        self.cthl = -1. / np.sqrt( 1. + self.gg ) * ( 1. + self.y * self.gg / 2. )  # np.cos(theta_l) from eq. (22a)
+        self.sthl = torch.sqrt( self.gg ) / torch.sqrt( 1. + self.gg ) * ( torch.sqrt ( 1. - self.y - self.y * self.y * self.gg / 4. ) ) # sin(theta_l) from eq. (22a)
+        self.cthl = -1. / torch.sqrt( 1. + self.gg ) * ( 1. + self.y * self.gg / 2. )  # torch.cos(theta_l) from eq. (22a)
         #ratio of momentum transfer to proton mass
         self.tau = -0.25 * self.t / self.M2
 
         # phi independent 4 - momenta vectors defined on eq. (21) -------------
         self.K.SetPxPyPzE( self.k * self.sthl, 0.0, self.k * self.cthl, self.k )
-        self.KP.SetPxPyPzE( self.K[0], 0.0, self.k * ( self.cthl + self.y * np.sqrt( 1. + self.gg ) ), self.kpr )
+        self.KP.SetPxPyPzE( self.K[0], 0.0, self.k * ( self.cthl + self.y * torch.sqrt( 1. + self.gg ) ), self.kpr )
         self.Q = self.K - self.KP
         self.p.SetPxPyPzE(0.0, 0.0, 0.0, self.M)
 
@@ -74,7 +76,7 @@ class BHDVCS(object):
         self.s = (self.p + self.K) * (self.p + self.K)
 
         # The Gamma factor in front of the cross section
-        self.Gamma = 1. / self.ALP_INV / self.ALP_INV / self.ALP_INV / self.PI / self.PI / 16. / ( self.s - self.M2 ) / ( self.s - self.M2 ) / np.sqrt( 1. + self.gg ) / self.x
+        self.Gamma = 1. / self.ALP_INV / self.ALP_INV / self.ALP_INV / self.PI / self.PI / 16. / ( self.s - self.M2 ) / ( self.s - self.M2 ) / torch.sqrt( 1. + self.gg ) / self.x
 
         # Defurne's Jacobian
         self.jcob = 1./ ( 2. * self.M * self.x * self.K[3] ) * 2. * self.PI * 2.
@@ -85,7 +87,7 @@ class BHDVCS(object):
 
         # phi dependent 4 - momenta vectors defined on eq. (21) -------------
 
-        self.QP.SetPxPyPzE(self.qp * np.sin(self.theta) * np.cos( phi * self.RAD ), self.qp * np.sin(self.theta) * np.sin( phi * self.RAD ), self.qp * np.cos(self.theta), self.qp)
+        self.QP.SetPxPyPzE(self.qp * torch.sin(self.theta) * torch.cos( phi * self.RAD ), self.qp * torch.sin(self.theta) * torch.sin( phi * self.RAD ), self.qp * torch.cos(self.theta), self.qp)
         self.D = self.Q - self.QP # delta vector eq. (12a)
         #print(self.D, "\n", self.Q, "\n", self.QP)
         self.pp = self.p + self.D # p' from eq. (21)
@@ -175,9 +177,9 @@ class BHDVCS(object):
         self.con_CUUI = self.CUUI * self.GeV2nb * self.jcob
 
         #Unpolarized Coefficients multiplied by the Form Factors
-        self.iAUU = (self.Gamma/(-self.t * self.QQ)) * np.cos( phi * self.RAD ) * self.con_AUUI * ( F1 * ReH + self.tau * F2 * ReE )
-        self.iBUU = (self.Gamma/(-self.t * self.QQ)) * np.cos( phi * self.RAD ) * self.con_BUUI * ( F1 + F2 ) * ( ReH + ReE )
-        self.iCUU = (self.Gamma/(-self.t * self.QQ)) * np.cos( phi * self.RAD ) * self.con_CUUI * ( F1 + F2 ) * ReHtilde
+        self.iAUU = (self.Gamma/(-self.t * self.QQ)) * torch.cos( phi * self.RAD ) * self.con_AUUI * ( F1 * ReH + self.tau * F2 * ReE )
+        self.iBUU = (self.Gamma/(-self.t * self.QQ)) * torch.cos( phi * self.RAD ) * self.con_BUUI * ( F1 + F2 ) * ( ReH + ReE )
+        self.iCUU = (self.Gamma/(-self.t * self.QQ)) * torch.cos( phi * self.RAD ) * self.con_CUUI * ( F1 + F2 ) * ReHtilde
         
 
         # Unpolarized BH-DVCS interference cross section
@@ -240,3 +242,18 @@ class BHDVCS(object):
 
         tot_sigma_uu = xsbhuu + xsiuu +  const # Constant added to account for DVCS contribution
         return tot_sigma_uu
+
+    def loss_function(self, kins, cffs, f_true):
+        phi, kin1, kin2, kin3, kin4, F1, F2, const = kins
+        ReH, ReE, ReHT = cffs
+
+        self.SetKinematics(kin1, kin2, kin3, kin4)
+        self.Set4VectorsPhiDep(phi)
+        self.Set4VectorProducts(phi)
+
+        xsbhuu	 = self.GetBHUUxs(phi, F1, F2)
+        xsiuu	 = self.GetIUUxs(phi, F1, F2, ReH, ReE, ReHT)
+
+        f_pred = xsbhuu + xsiuu +  const
+
+        return torch.mean((f_pred-f_true) ** 2)
