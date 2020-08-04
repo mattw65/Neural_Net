@@ -159,8 +159,8 @@ def avgs_LM():
     print('%25s%.1f%%' % ('Average Error lm (ReE) = ', avgerrE))
     print('%25s%.1f%%\n' % ('Average Error lm (ReHT) = ', avgerrHT))			
 
-#avgs_scipy()
-#avgs_LM()
-#fit_scipy(0)
+# avgs_scipy()
+# avgs_LM()
+# fit_scipy(0)
 # fit_lm(1)
 
