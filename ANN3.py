@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd 
 from BHDVCS_torch import TBHDVCS
 
-import BHDVCS_fit as dvcsfit
+#import BHDVCS_fit as dvcsfit
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -18,7 +18,7 @@ from scipy.stats import chisquare
 tb = TBHDVCS()
 
 f = tb.TotalUUXS_curve_fit3
-loss_func = tb.loss_function
+loss_func = tb.loss_MSE
 
 dats = pd.read_csv('dvcs_psuedo.csv')
 n = np.array(dats['#Set'])
@@ -42,13 +42,13 @@ err_HT = []
 
 EPOCH = 2500
 
-for datset in range(12):
+for datset in range(14):
     a = datset*36
     b = a + 36
 
 
     xdat = np.asarray([phi[a:b], qq[a:b], xb[a:b], t[a:b], k[a:b], F1[a:b], F2[a:b], const[a:b]])
-    x = Variable(torch.from_numpy(xdat[1:5].transpose()))
+    x = Variable(torch.from_numpy(xdat[1:5].transpose())) # using qq, xb, t, k
     y = Variable(torch.from_numpy(ydat[a:b].transpose()))
     xdat = Variable(torch.from_numpy(xdat))
     errs = Variable(torch.from_numpy(errF[a:b]))
@@ -85,20 +85,20 @@ for datset in range(12):
         loss.backward()
         optimizer.step()
 
-    plt.plot(np.linspace(int(.05*EPOCH), EPOCH, int(.95*EPOCH)), np.asarray(losses)[int(.05*EPOCH):], 'bo', label='Loss')
-    plt.plot(np.linspace(int(.05*EPOCH), EPOCH, int(.95*EPOCH)), np.zeros(int(0.95*EPOCH))+float(loss.data.float()), 'g--',             label='Final Loss = %.3e' % (float(loss.data.float())))
-    plt.legend()
-    plt.show()
+    # plt.plot(np.linspace(int(.05*EPOCH), EPOCH, int(.95*EPOCH)), np.asarray(losses)[int(.05*EPOCH):], 'bo', label='Loss')
+    # plt.plot(np.linspace(int(.05*EPOCH), EPOCH, int(.95*EPOCH)), np.zeros(int(0.95*EPOCH))+float(loss.data.float()), 'g--',             label='Final Loss = %.3e' % (float(loss.data.float())))
+    # plt.legend()
+    # plt.show()
 
     ReHfit = torch.mean(torch.transpose(p, 0, 1)[0]).data.numpy()
     ReEfit = torch.mean(torch.transpose(p, 0, 1)[1]).data.numpy()
     ReHTfit = torch.mean(torch.transpose(p, 0, 1)[2]).data.numpy()
     fit_cffs = [ReHfit, ReEfit, ReHTfit]
 
-    plt.plot(phi[a:b], ydat[a:b], 'bo', label='data')
-    plt.plot(phi[a:b], f(xdat,fit_cffs), 'g--', label='fit')
-    plt.legend()
-    plt.show()
+    # plt.plot(phi[a:b], ydat[a:b], 'bo', label='data')
+    # plt.plot(phi[a:b], f(xdat,fit_cffs), 'g--', label='fit')
+    # plt.legend()
+    # plt.show()
 
     err_H.append(abs(100*(abs(fit_cffs[0]-ReH_target[a]))/ReH_target[a]))
     err_E.append(abs(100*(abs(fit_cffs[1]-ReE_target[a]))/ReE_target[a]))
@@ -107,8 +107,7 @@ for datset in range(12):
     print('Chi-Squared Value for this fit: %.3e' % (chisquare(f(xdat,fit_cffs), ydat[a:b])[0]))
     print('MSE Loss Value for this fit: %.3e' % (float(loss.data.float())))
     print('Average Error for set #%d using ANN = %.2f%%' % ((datset), ((err_H[-1]+err_E[-1]+err_HT[-1])/3)))
-    dvcsfit.fit_scipy(datset) 
-    print(datset)
+    #dvcsfit.fit_scipy(datset)
 
 print('\n\033[1m%s%.2f%%' % ('Avg. Error of ReH = ', sum(err_H)/len(err_H)))
 print('\033[1m%s%.2f%%' % ('Avg. Error of ReE = ', sum(err_E)/len(err_E)))

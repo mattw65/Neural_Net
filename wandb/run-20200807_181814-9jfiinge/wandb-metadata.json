@@ -1,0 +1,26 @@
+{
+    "root": "/Users/MattWalsh/Desktop/UVA/Research/Neural_Net",
+    "program": "<python with no main file>",
+    "git": {
+        "remote": "https://github.com/mattw65/Neural_Net",
+        "commit": "006b61eeaddbd9c2e068b987f95533ad9795ee6f"
+    },
+    "email": "mattw6500@gmail.com",
+    "startedAt": "2020-08-07T22:18:14.792693",
+    "host": "MacBook-Pro-2.local",
+    "username": "MattWalsh",
+    "executable": "/Users/MattWalsh/.pyenv/versions/3.8.0/bin/python",
+    "os": "macOS-10.15.6-x86_64-i386-64bit",
+    "python": "3.8.0",
+    "cpu_count": 8,
+    "args": [
+        "-f",
+        "/Users/MattWalsh/Library/Jupyter/runtime/kernel-34293eb5-5fb4-4feb-9a10-206774425215.json"
+    ],
+    "state": "running",
+    "jobType": null,
+    "mode": "run",
+    "name": "blooming-field-11",
+    "project": "extraction-net",
+    "heartbeatAt": "2020-08-07T22:18:16.228589"
+}
