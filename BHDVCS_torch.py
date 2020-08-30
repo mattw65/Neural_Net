@@ -243,7 +243,7 @@ class TBHDVCS(object):
         tot_sigma_uu = xsbhuu + xsiuu +  const # Constant added to account for DVCS contribution
         return tot_sigma_uu
 
-    def loss_function(self, kins, cffs, errs, f_true):
+    def loss_MSE(self, kins, cffs, f_true):
         phi, kin1, kin2, kin3, kin4, F1, F2, const = kins
         ReH, ReE, ReHT = cffs #output of network
 
@@ -256,4 +256,19 @@ class TBHDVCS(object):
 
         f_pred = xsbhuu + xsiuu +  const
 
-        return torch.mean(((f_pred-f_true)/errs) ** 2)
+        return torch.mean(torch.square(f_pred-f_true))
+
+    def loss_MSE_errs(self, kins, cffs, errs, f_true):
+        phi, kin1, kin2, kin3, kin4, F1, F2, const = kins
+        ReH, ReE, ReHT = cffs #output of network
+
+        self.SetKinematics(kin1, kin2, kin3, kin4)
+        self.Set4VectorsPhiDep(phi)
+        self.Set4VectorProducts(phi)
+
+        xsbhuu	 = self.GetBHUUxs(phi, F1, F2)
+        xsiuu	 = self.GetIUUxs(phi, F1, F2, ReH, ReE, ReHT)
+
+        f_pred = xsbhuu + xsiuu +  const
+
+        return torch.mean(torch.square((f_pred-f_true)/errs))

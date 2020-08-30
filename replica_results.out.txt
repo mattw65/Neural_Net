@@ -1,0 +1,70 @@
+
+Mean ReH for set 2 = 6.66, error = 7.87, variance = 7.55
+Mean ReE for set 2 = -43.83, error = 7.19, variance = 249.23
+Mean ReHT for set 2 = 4.50, error = 12.02, variance = 0.76
+
+
+Mean ReH for set 0 = 13.77, error = 5.47, variance = 1.26
+Mean ReE for set 0 = -56.88, error = 7.20, variance = 33.99
+Mean ReHT for set 0 = 6.87, error = 5.23, variance = 0.45
+
+
+Mean ReH for set 1 = 11.97, error = 4.64, variance = 5.43
+Mean ReE for set 1 = -49.12, error = 6.54, variance = 150.46
+Mean ReHT for set 1 = 7.37, error = 5.68, variance = 1.46
+
+
+Mean ReH for set 5 = 6.97, error = 3.47, variance = 3.28
+Mean ReE for set 5 = -45.74, error = 3.15, variance = 106.66
+Mean ReHT for set 5 = 4.27, error = 6.27, variance = 0.39
+
+
+Mean ReH for set 4 = 11.54, error = 8.07, variance = 1.78
+Mean ReE for set 4 = -47.15, error = 10.29, variance = 47.47
+Mean ReHT for set 4 = 7.37, error = 5.71, variance = 0.50
+
+
+Mean ReH for set 3 = 9.31, error = 21.70, variance = 7.71
+Mean ReE for set 3 = -56.17, error = 17.87, variance = 197.24
+Mean ReHT for set 3 = 4.71, error = 10.77, variance = 1.35
+
+
+Mean ReH for set 6 = 9.45, error = 19.49, variance = 11.40
+Mean ReE for set 6 = -38.69, error = 25.23, variance = 365.13
+Mean ReHT for set 6 = 7.31, error = 12.05, variance = 2.57
+
+
+Mean ReH for set 12 = 8.15, error = 16.56, variance = 0.80
+Mean ReE for set 12 = -53.90, error = 14.70, variance = 30.21
+Mean ReHT for set 12 = 3.31, error = 14.87, variance = 0.30
+
+
+Mean ReH for set 7 = 8.71, error = 13.84, variance = 5.35
+Mean ReE for set 7 = -53.11, error = 11.46, variance = 135.71
+Mean ReHT for set 7 = 4.74, error = 11.52, variance = 2.63
+
+
+Mean ReH for set 8 = 11.74, error = 6.51, variance = 0.45
+Mean ReE for set 8 = -48.24, error = 8.20, variance = 11.66
+Mean ReHT for set 8 = 7.21, error = 3.32, variance = 0.61
+
+
+Mean ReH for set 11 = 10.48, error = 10.75, variance = 4.11
+Mean ReE for set 11 = -44.79, error = 13.44, variance = 127.54
+Mean ReHT for set 11 = 6.58, error = 0.85, variance = 0.98
+
+
+Mean ReH for set 9 = 7.98, error = 14.11, variance = 1.38
+Mean ReE for set 9 = -52.82, error = 12.41, variance = 53.36
+Mean ReHT for set 9 = 3.17, error = 18.25, variance = 0.30
+
+
+Mean ReH for set 10 = 6.49, error = 10.16, variance = 2.47
+Mean ReE for set 10 = -42.97, error = 9.01, variance = 78.52
+Mean ReHT for set 10 = 4.13, error = 2.99, variance = 0.67
+
+
+Mean ReH for set 13 = 6.69, error = 7.41, variance = 2.81
+Mean ReE for set 13 = -44.21, error = 6.38, variance = 91.58
+Mean ReHT for set 13 = 4.25, error = 5.93, variance = 1.11
+
