@@ -257,8 +257,22 @@ class TBHDVCS(object):
         f_pred = xsbhuu + xsiuu +  const
 
         return torch.mean(torch.square(f_pred-f_true))
+    
+    def loss_MSE2(self, kins, ReH, ReE, ReHT, sigma, f_true):
+        phi, kin1, kin2, kin3, kin4, F1, F2, const = kins
 
-    def loss_MSE_errs(self, kins, cffs, errs, f_true):
+        self.SetKinematics(kin1, kin2, kin3, kin4)
+        self.Set4VectorsPhiDep(phi)
+        self.Set4VectorProducts(phi)
+
+        xsbhuu	 = self.GetBHUUxs(phi, F1, F2)
+        xsiuu	 = self.GetIUUxs(phi, F1, F2, ReH, ReE, ReHT)
+
+        f_pred = xsbhuu + xsiuu +  const
+
+        return torch.mean(torch.square(f_pred-f_true)/sigma)
+
+    def loss_MSE_errs(self, kins, cffs, sigma, f_true):
         phi, kin1, kin2, kin3, kin4, F1, F2, const = kins
         ReH, ReE, ReHT = cffs #output of network
 
@@ -271,4 +285,4 @@ class TBHDVCS(object):
 
         f_pred = xsbhuu + xsiuu +  const
 
-        return torch.mean(torch.square((f_pred-f_true)/errs))
+        return torch.mean(torch.square((f_pred-f_true)/sigma))

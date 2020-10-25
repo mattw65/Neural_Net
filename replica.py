@@ -17,6 +17,7 @@ from scipy.stats import chisquare
 tb = TBHDVCS()
 
 f = tb.TotalUUXS_curve_fit3
+g = tb.TotalUUXS_curve_fit
 loss_func = tb.loss_MSE_errs
 
 dats = pd.read_csv('dvcs_psuedo.csv')
@@ -41,9 +42,6 @@ errs_H = []
 errs_E = []
 errs_HT = []
 
-rep_ReH = []
-rep_ReE = []
-rep_ReHT = []
 
 blank_net = torch.nn.Sequential(
         torch.nn.Linear(4, 100),
@@ -59,66 +57,82 @@ optimizer = torch.optim.Adam(blank_net.parameters(), lr=0.02)
 
 EPOCH = 2500
 
-datset = int(sys.argv[1])
+repNum = int(sys.argv[1])
+datset = 0
 
-reps = 100
+fVals = np.zeros((100,36))
+fitErrs = np.zeros((36))
 
 i = datset
 a = 36*i # start index of set
 b = a+36 # end index of set
 
+rep_ReH = []
+rep_ReE = []
+rep_ReHT = []
+rep_ReH.clear()
+rep_ReE.clear()
+rep_ReHT.clear()
 
 
-for rep in range(reps): # create n replicas
+
+
+net = blank_net # untrain/reset network
+
+yrep = [0] * (b-a) # create array to be filled with replicated F values
+
+for l in range(b-a): # populate yrep with random normal values with mean = F and sd = errF
+
+    yind = a+l # index of data point 
+    yrep[l] = (np.random.normal(F[yind], errF[yind]))
+
+
+xdat = np.array([phi[a:b], qq[a:b], xb[a:b], t[a:b], k[a:b], F1[a:b], F2[a:b], const[a:b]])
+ydat = np.array(yrep)
+
+x = Variable(torch.from_numpy(xdat[1:5].transpose()))
+y = Variable(torch.from_numpy(ydat.transpose()))
+
+xdat = Variable(torch.from_numpy(xdat))
+
+errs = Variable(torch.from_numpy(errF[a:b]))
+
+for epoch in range(EPOCH):
+
+    p = net(x.float()) #output arrays for 3 predicted values for cffs
+
+    hs = torch.transpose(p, 0, 1)[0] # array of 36 values for ReH at each increment of phi
+    es = torch.transpose(p, 0, 1)[1] # array of 36 values for ReE at each increment of phi
+    hts = torch.transpose(p, 0, 1)[2] # array of 36 values for ReHT at each increment of phi
+
+    ReHfit = torch.mean(hs)
+    ReEfit = torch.mean(es)
+    ReHTfit = torch.mean(hts)
+
+    cffs = [ReHfit, ReEfit, ReHTfit]
+
+    loss = loss_func((xdat.float()), cffs, errs, y)
+
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+
+ReHfits = (torch.transpose(p, 0, 1)[0]).data.numpy()
+ReEfits = (torch.transpose(p, 0, 1)[1]).data.numpy()
+ReHTfits = (torch.transpose(p, 0, 1)[2]).data.numpy()
+ReHfit = np.mean(ReHfits)
+ReEfit = np.mean(ReEfits)
+ReHTfit = np.mean(ReHTfits)
+fit_cffs = [ReHfit, ReEfit, ReHTfit]
+
+#     plt.plot(phi[a:b], F[a:b], 'ro', label='data')
+#     plt.plot(phi[a:b], f(xdat,fit_cffs), 'b--', label='fit')
+#     plt.legend()
+#     plt.show()
+
+print('%d %.2f %.2f %.2f' % (repNum, ReHfits[18], ReEfits[18], ReHTfits[18]))
+
     
-    net = blank_net # untrain/reset network
-    
-    yrep = [0] * (b-a) # create array to be filled with replicated F values
-    
-    for l in range(b-a): # populate yrep with random normal values with mean = F and sd = errF
-        
-        yind = a+l # index of data point 
-        yrep[l] = (np.random.normal(F[yind], errF[yind]))
-
-    
-    xdat = np.array([phi[a:b], qq[a:b], xb[a:b], t[a:b], k[a:b], F1[a:b], F2[a:b], const[a:b]])
-    ydat = np.array(yrep)
-
-    x = Variable(torch.from_numpy(xdat[1:5].transpose()))
-    y = Variable(torch.from_numpy(ydat.transpose()))
-
-    xdat = Variable(torch.from_numpy(xdat))
-
-    errs = Variable(torch.from_numpy(errF[a:b]))
-
-    for epoch in range(EPOCH):
-
-        p = net(x.float()) #output 3 predicted values for cffs
-
-        ReHfit = torch.mean(torch.transpose(p, 0, 1)[0])
-        ReEfit = torch.mean(torch.transpose(p, 0, 1)[1])
-        ReHTfit = torch.mean(torch.transpose(p, 0, 1)[2])
-        cffs = [ReHfit, ReEfit, ReHTfit]
-
-        loss = loss_func((xdat.float()), cffs, errs, y)
-
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-
-    rep_ReH.append(cffs[0].data.numpy())
-    rep_ReE.append(cffs[1].data.numpy())
-    rep_ReHT.append(cffs[2].data.numpy())
-
-rep_ReH = np.array(rep_ReH)
-rep_ReE = np.array(rep_ReE)
-rep_ReHT = np.array(rep_ReHT)
-
-err_H = abs(100*(abs(np.mean(rep_ReH)-ReH_target[a]))/ReH_target[a])
-err_E = abs(100*(abs(np.mean(rep_ReE)-ReE_target[a]))/ReE_target[a])
-err_HT = abs(100*(abs(np.mean(rep_ReHT)-ReHT_target[a]))/ReHT_target[a])
 
 
-print('\nMean ReH for set %d = %.2f, error = %.2f, variance = %.2f' % (i, np.mean(rep_ReH), err_H, np.var(rep_ReH)))
-print('Mean ReE for set %d = %.2f, error = %.2f, variance = %.2f' % (i, np.mean(rep_ReE), err_E, np.var(rep_ReE)))
-print('Mean ReHT for set %d = %.2f, error = %.2f, variance = %.2f\n' % (i, np.mean(rep_ReHT), err_HT, np.var(rep_ReHT)))
