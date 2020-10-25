@@ -280,8 +280,8 @@ class TBHDVCS(object):
         self.Set4VectorsPhiDep(phi)
         self.Set4VectorProducts(phi)
 
-        xsbhuu	 = self.GetBHUUxs(phi, F1, F2)
-        xsiuu	 = self.GetIUUxs(phi, F1, F2, ReH, ReE, ReHT)
+        xsbhuu = self.GetBHUUxs(phi, F1, F2)
+        xsiuu = self.GetIUUxs(phi, F1, F2, ReH, ReE, ReHT)
 
         f_pred = xsbhuu + xsiuu +  const
 

@@ -33,7 +33,6 @@ meanReHT = np.mean(ReHTs)
 varReHT = np.var(ReHTs)
 
 plt.hist(ReHs, bins=100, range = (meanReH - 3*np.sqrt(varReH), meanReH + 3*np.sqrt(varReH)))
-plt.hist(ReEs, bins=100, range = (meanReE - 3*np.sqrt(varReE), meanReE + 3*np.sqrt(varReE)))
 plt.show()
 
 
