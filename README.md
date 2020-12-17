@@ -1,4 +1,4 @@
-# Neural_Net
+# Extracting Compton Form Factors from Deeply Virtual Compton Scattering Data with Artificial Neural Networks
 See README.pdf for full writeup.
 
 Extracting Compton Form Factors from Deeply Virtual Compton Scattering Data with Artificial Neural Networks
