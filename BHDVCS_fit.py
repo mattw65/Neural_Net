@@ -57,11 +57,11 @@ def fit_scipy(n):
     # print('%25s%.2f' % ('Fit Value of ReHT = ', popt[2]))
     # print('%25s%.2f' % ('Actual Value of ReHT = ', ReHT_exp[a]))
     # print('%25s%.1f%%' % ('Error (ReHT) = ', err_HT))
-    print('Average Error for set #%d using scipy = %.2f%%' % (n, (abs(err_H)+abs(err_E)+abs(err_HT))/3))
+    #print('Average Error for set #%d using scipy = %.2f%%' % (n, (abs(err_H)+abs(err_E)+abs(err_HT))/3))
 
 
-    # plt.plot(phi[a:b], ydat[a:b], 'bo', label='data')
-    # plt.plot(phi[a:b], f(xdat, *popt), 'g--', label='fit: ReH=%5.3f, ReE=%5.3f, ReHT=%5.3f' % tuple(popt))
+    # plt.plot(phi[a:b], ydat[a:b], 'bo', label='Given F Values')
+    # plt.plot(phi[a:b], f(xdat, *popt), 'g--', label='Line of Best Fit: ReH=%5.3f, ReE=%5.3f, ReHT=%5.3f' % tuple(popt))
     # plt.legend()
     # plt.show()
 
@@ -119,13 +119,14 @@ def fit_lm(n):
 
     return err_H, err_E, err_HT
 
-def avgs_scipy():
+def avgs_scipy1():
     
     err_H = []
     err_E = []
     err_HT = []
 
-    for r in range(np.amax(n)):
+    for r in range(15):
+        print(r)
         errs = fit_scipy(r)
         err_H.append(errs[0])
         err_E.append(errs[1])
@@ -159,8 +160,9 @@ def avgs_LM():
     print('%25s%.1f%%' % ('Average Error lm (ReE) = ', avgerrE))
     print('%25s%.1f%%\n' % ('Average Error lm (ReHT) = ', avgerrHT))			
 
-# avgs_scipy()
-# avgs_LM()
-# fit_scipy(0)
+
+avgs_scipy1()
+#avgs_LM()
+#fit_scipy(0)
 # fit_lm(1)
 
